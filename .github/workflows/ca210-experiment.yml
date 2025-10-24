@@ -1,0 +1,44 @@
+name: CA210 Experiment
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * *'  # daily at 03:00 UTC
+
+concurrency:
+  group: ca210-experiment-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    env:
+      LC_ALL: C
+      LANG: C
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip
+          pip install -r requirements.txt
+
+      - name: Run experiment
+        run: |
+          PYTHONPATH=. python scripts/run_experiment.py
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ca210-artifacts-${{ github.run_id }}
+          path: artifacts
+          if-no-files-found: error
+          retention-days: 14
+
