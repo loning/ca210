@@ -30,15 +30,6 @@ jobs:
           python -m pip install -U pip
           pip install -r requirements.txt
 
-      - name: Run experiment
+      - name: Run tests (P0 physics)
         run: |
-          PYTHONPATH=. python scripts/run_experiment.py
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ca210-artifacts-${{ github.run_id }}
-          path: artifacts
-          if-no-files-found: error
-          retention-days: 14
-
+          PYTHONPATH=. pytest -q

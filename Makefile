@@ -3,7 +3,7 @@ PYTHON := python3
 PIP := $(VENV)/bin/pip
 PYBIN := $(VENV)/bin/python
 
-.PHONY: setup test run ci
+.PHONY: setup test
 
 setup:
 	$(PYTHON) -m venv $(VENV)
@@ -12,6 +12,3 @@ setup:
 
 test:
 	. $(VENV)/bin/activate; PYTHONPATH=. $(VENV)/bin/pytest -q
-
-run ci:
-	. $(VENV)/bin/activate; PYTHONPATH=. $(PYBIN) scripts/run_experiment.py

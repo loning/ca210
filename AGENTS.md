@@ -1,30 +1,16 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `src/` — Python package with core logic.
-  - `src/core.py` — cellular automaton state (`Universe`, `Cell`) and step logic.
-  - `src/eval.py` — metrics (entropy/MI), spectral decomposition, window selection.
-  - `src/ci.py` — compliance/report generation utilities (uses matplotlib).
-  - `src/layer.py` — layered wrapper (`Layered`, `MacroLayer`) and macro timeseries.
-  - `docs/` — background and specification (`docs/spec.md`, `docs/theory.md`).
-- `README.md` — high‑level overview.
-- `tests/` — add new tests here (not present yet).
+- `docs/` — specifications (`docs/spec.md`, `docs/theory.md`) 与分层设计（例如 `docs/P0-PHYSICS.md`）。
+- `src/` — Python 源码。
+  - `src/p0/` — 物理层（可逆 Rule 接口 + 树结构 Cell）。
+- `tests/` — pytest 测试（当前 `tests/test_physics.py` 覆盖可逆性与嵌套 ring）。
 
 ## Build, Test, and Development Commands
 - Environment: Python 3.9+ recommended.
 - Install deps: `pip install -r requirements.txt`
-- Run library code (example):
-  - `PYTHONPATH=. python - <<'PY'
-from src.core import make_universe
-from src.eval import timeseries
-U = make_universe(N=64)
-print(timeseries(U, T=16).head())
-PY`
-- Module execution: `PYTHONPATH=. python -m src.eval` (modules are library‑first; no CLI prompts expected).
-- Tests: `PYTHONPATH=. pytest` (configured via `pyproject.toml`).
-- Long‑run experiment (headless, reproducible):
-  - `PYTHONPATH=. python scripts/run_experiment.py --output-dir artifacts`.
-  - Or via Makefile: `make setup && make run`.
+- Tests: `PYTHONPATH=. pytest`。
+- Makefile: `make setup`（创建虚拟环境）与 `make test`。
 
 ## Coding Style & Naming Conventions
 - Follow PEP 8; 4‑space indentation; max line length ~88.
@@ -33,12 +19,12 @@ PY`
 - Prefer pure, side‑effect‑light functions in `src/`; keep plotting and I/O in callers.
 
 ## Testing Guidelines
-- Use `pytest`; place tests under `tests/` with `test_*.py` names (e.g., `tests/test_core.py`).
-- Cover core behaviors (state updates, entropy/MI functions, decomposition invariants).
-- Aim for ≥80% coverage on changed code; run `pytest -q` locally before PRs.
+- 使用 `pytest`；测试文件命名为 `tests/test_*.py`。
+- 当前核心测试：`tests/test_p0.py` 验证可逆性与 Rule110 行为。
+- 未来层级继续追加相应测试；在提交前运行 `pytest -q`。
 
 ## Commit & Pull Request Guidelines
-- Commits: imperative mood with scoped prefix, e.g., `core: implement rule110`, `eval: fix entropy edge case`, `docs: update theory`.
+- Commits: imperative mood with scoped prefix, e.g., `p0: add reversible ring`, `docs: add P1 design`.
 - PRs: include summary, rationale, and validation (commands, screenshots/plots if applicable). Link issues, note API changes, and update `README.md`/`docs/` when behavior changes.
 
 ## Security & Configuration Tips
