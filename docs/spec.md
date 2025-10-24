@@ -96,6 +96,24 @@ $$
 
 ---
 
+### 3.5 分层架构（原型，逐层建立）
+
+为支持“元胞嵌套”，本版加入无反馈的宏层包装：
+
+- 分组：将微胞按固定窗口 `g` 连续分组，得到宏胞索引；
+- 聚合：宏 `x` 与 `a` 由组内比特通过 `parity`（或 `majority`）得到；
+- 推进：仅微层推进（保持可逆），宏层仅读取聚合态，不写回 Law（信息不丢失、不干预）。
+
+参考实现：`src/layer.py`
+
+API：
+- `Layered(U, MacroLayer(group_size=4, mode='parity'))`
+- `Layered.macro_snapshot() -> (X_macro, A_macro)`
+- `Layered.step(t)` / `Layered.step_inverse(t)` / `Layered.inverse_check(t)`
+- `macro_timeseries(N,T,group_size,mode)` → DataFrame(`name,t,H3_x,H_a,MI_xa`)
+
+备注：后续可在保持全局双射的前提下，引入“上行许可/下行门控”闭环；当前阶段以“无反馈”保证可逆性与信息守恒。
+
 ## 4. Obs 层（观察/评估）规范
 
 ### 4.1 时间序列（最小指标）

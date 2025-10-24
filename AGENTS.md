@@ -5,7 +5,8 @@
   - `src/core.py` — cellular automaton state (`Universe`, `Cell`) and step logic.
   - `src/eval.py` — metrics (entropy/MI), spectral decomposition, window selection.
   - `src/ci.py` — compliance/report generation utilities (uses matplotlib).
-- `docs/` — background and specification (`docs/spec.md`, `docs/theory.md`).
+  - `src/layer.py` — layered wrapper (`Layered`, `MacroLayer`) and macro timeseries.
+  - `docs/` — background and specification (`docs/spec.md`, `docs/theory.md`).
 - `README.md` — high‑level overview.
 - `tests/` — add new tests here (not present yet).
 
