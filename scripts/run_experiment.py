@@ -43,8 +43,9 @@ def main(argv=None) -> int:
     out_dir = "artifacts"
     os.makedirs(out_dir, exist_ok=True)
 
-    # Import after headless setup
+    # Import modules
     from src.ci import run_ci  # type: ignore
+    from src.search import dovetail, pareto_front  # type: ignore
 
     res = run_ci(output_dir=out_dir, N=args.N, T=args.T)
     print("Run complete.")
@@ -55,6 +56,17 @@ def main(argv=None) -> int:
     if args.compat_ts and "timeseries_csv" in res:
         compat_path = _write_compat_timeseries(res["timeseries_csv"], out_dir)
         print(f"compat_timeseries: {compat_path}")
+
+    # Search deliverables (dovetail + pareto)
+    df_all = dovetail(N=args.N, layers=3, delta=max(16, args.T//2), num_cand=16)
+    path_all = os.path.join(out_dir, "ca210_dovetail_all.csv")
+    df_all.to_csv(path_all, index=False)
+    print(f"dovetail_all: {path_all}")
+
+    pf = pareto_front(df_all, keys_max=["mi_gain","h3_gain"], keys_min=["alias_share","recon_err"])
+    path_pf = os.path.join(out_dir, "ca210_pareto.csv")
+    pf.to_csv(path_pf, index=False)
+    print(f"pareto: {path_pf}")
 
     return 0
 

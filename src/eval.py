@@ -81,6 +81,14 @@ def three_decompose(series: np.ndarray, frac:float=0.3, use_B6:bool=True):
     recon=alias+bern+trunc; err=float(np.max(np.abs(recon-x)))
     return dict(**shares, recon_err=err, alias_series=alias, bern_series=bern, trunc_series=trunc, recon_series=recon)
 
+# Compatibility wrapper to match documented API name/signature
+def decompose(series: np.ndarray, frac: float = 0.3, use_B4B6: bool = True):
+    """Decompose into alias/bern/trunc shares and return a dict with recon_err.
+
+    This wraps three_decompose; `use_B4B6=True` enables B6 layer to match docs.
+    """
+    return three_decompose(series, frac=frac, use_B6=use_B4B6)
+
 def normalize_mean1(h: np.ndarray)->np.ndarray:
     m=float(np.mean(h)) or 1.0; return h/m
 def win_blackman(L:int):
